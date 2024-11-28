@@ -1,13 +1,11 @@
 <?php
 
 use Maruko\DddPhp\AccountApplicationService;
-use Maruko\DddPhp\AccountBuilder;
 use Maruko\DddPhp\AccountRepositoryMemory;
-use Maruko\DddPhp\CreditCommand;
 use Maruko\DddPhp\CreditHandler;
-use Maruko\DddPhp\DebitCommand;
+use Maruko\DddPhp\DebitHandler;
 use Maruko\DddPhp\Publisher;
-use Maruko\DddPhp\TransferCommand;
+use Maruko\DddPhp\TransferHandler;
 
 $accountApplicationService = null;
 
@@ -15,6 +13,8 @@ beforeEach(function () use (&$accountApplicationService) {
     $publisher = new Publisher();
     $accountRepositoryMemory = new AccountRepositoryMemory();
     $publisher->register(new CreditHandler($accountRepositoryMemory));
+    $publisher->register(new DebitHandler($accountRepositoryMemory));
+    $publisher->register(new TransferHandler($accountRepositoryMemory));
 
     $accountApplicationService = new AccountApplicationService(
         $publisher,
@@ -48,66 +48,52 @@ test('Deve criar uma conta e fazer um depósito', function () use (&$accountAppl
         ->toBe(1000);
 });
 
-test('Deve criar uma conta e fazer um débito', function () {
+test('Deve criar uma conta e fazer um débito', function () use (&$accountApplicationService) {
 
-    $accountBuilder = new AccountBuilder("123.123.123-12");
+    $document = "123.123.123-12";
 
-    $account = $accountBuilder
-        ->setBank("033")
-        ->setBranch("001")
-        ->setAccount("98757-9")
-        ->build();
+    $accountApplicationService->create($document);
 
-    $creditCommand = new CreditCommand($account, 1000);
-    $creditCommand->execute();
+    $accountApplicationService->credit($document, 1000);
 
-    $creditCommand = new DebitCommand($account, 1000);
-    $creditCommand->execute();
+    expect($accountApplicationService->get($document)->getBalance())
+        ->toBeInt()
+        ->toBe(1000);
 
-    expect($account->getBalance())
+    $accountApplicationService->debit($document, 1000);
+
+    expect($accountApplicationService->get($document)->getBalance())
         ->toBeInt()
         ->toBe(0);
 });
 
-test('Não deve ser possivel debitar valores igual ou menor que zero e ser maior que o saldo disponivel', function () {
+test('Não deve ser possivel debitar valores igual ou menor que zero e ser maior que o saldo disponivel', function () use (&$accountApplicationService) {
 
-    $accountBuilder = new AccountBuilder("123.123.123-12");
+    $document = "123.123.123-12";
 
-    $account = $accountBuilder
-        ->setBank("033")
-        ->setBranch("001")
-        ->setAccount("98757-9")
-        ->build();
+    $accountApplicationService->create($document);
 
-
-    expect(function () use ($account) {
-        $debitCommand = new DebitCommand($account, 0);
-        $debitCommand->execute();
+    expect(function () use ($accountApplicationService, $document) {
+        $accountApplicationService->debit($document, 0);
     })
         ->toThrow(
             Exception::class,
             'Amount must be greater than 0'
         )
-        ->and(function () use ($account) {
-            $debitCommand = new DebitCommand($account, 1);
-            $debitCommand->execute();
+        ->and(function () use ($accountApplicationService, $document) {
+            $accountApplicationService->debit($document, 1);
         })
         ->toThrow(Exception::class, 'Insufficient balance');
 
 });
 
-test('Não deve ser possivel depositar valores igual ou menor que zero', function () {
+test('Não deve ser possivel depositar valores igual ou menor que zero', function () use (&$accountApplicationService) {
 
-    $accountBuilder = new AccountBuilder("123.123.123-12");
+    $document = "123.123.123-12";
 
-    $account = $accountBuilder
-        ->setBank("033")
-        ->setBranch("001")
-        ->setAccount("98757-9")
-        ->build();
+    $accountApplicationService->create($document);
 
-    $creditCommand = new CreditCommand($account, 0);
-    expect(fn() => $creditCommand->execute())
+    expect(fn() => $accountApplicationService->credit($document, 0))
         ->toThrow(
             Exception::class,
             'Amount must be greater than 0'
@@ -115,32 +101,17 @@ test('Não deve ser possivel depositar valores igual ou menor que zero', functio
 });
 
 
-test('Deve criar duas contas e fazer uma tranferência', function () {
+test('Deve criar duas contas e fazer uma tranferência', function () use (&$accountApplicationService) {
+    $documentFrom = "123.123.123-12";
+    $documentTo = "123.123.123-11";
 
-    $accountBuilderFrom = new AccountBuilder("123.123.123-12");
-    $accountBuilderTo = new AccountBuilder("123.123.123-13");
+    $accountApplicationService->create($documentFrom);
+    $accountApplicationService->credit($documentFrom, 1000);
+    $accountApplicationService->create($documentTo);
 
-    $accountFrom = $accountBuilderFrom
-        ->setBank("033")
-        ->setBranch("001")
-        ->setAccount("98757-9")
-        ->build();
+    $accountApplicationService->credit($documentTo, 500);
 
-    $accountTo = $accountBuilderTo
-        ->setBank("031")
-        ->setBranch("002")
-        ->setAccount("98752-5")
-        ->build();
-
-    $creditCommandFrom = new CreditCommand($accountFrom, 1000);
-    $creditCommandFrom->execute();
-
-    $creditCommandTo = new CreditCommand($accountTo, 500);
-    $creditCommandTo->execute();
-
-    $creditCommandTo = new TransferCommand($accountFrom, $accountTo, 700);
-    $creditCommandTo->execute();
-
-    expect($accountFrom->getBalance())->toBe(300)
-        ->and($accountTo->getBalance())->toBe(1200);
+    $accountApplicationService->transfer($documentFrom, $documentTo, 700);
+    expect($accountApplicationService->get($documentFrom)->getBalance())->toBe(300)
+        ->and($accountApplicationService->get($documentTo)->getBalance())->toBe(1200);
 });

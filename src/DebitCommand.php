@@ -4,7 +4,7 @@ namespace Maruko\DddPhp;
 
 class DebitCommand implements Command
 {
-    const string operation = 'debit';
+    private string $operation = 'debit';
 
     public function __construct(
         private readonly string $accountDocument,

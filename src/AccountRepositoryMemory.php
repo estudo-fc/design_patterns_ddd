@@ -6,8 +6,6 @@ use Exception;
 
 class AccountRepositoryMemory implements AccountRepository
 {
-
-
     /**
      * @var array<Account>
      */
@@ -22,12 +20,13 @@ class AccountRepositoryMemory implements AccountRepository
      */
     public function get(string $accountDocument): Account
     {
-        return array_reduce(
-            $this->accounts,
-            fn(?Account $carry, Account $account) => $account->getDocument() === $accountDocument
-                ? $account
-                : throw new Exception("Account not found."),
-        );
+        foreach ($this->accounts as $account) {
+            if ($account->getDocument() === $accountDocument) {
+                return $account;
+            }
+        }
+
+        throw new Exception("Account not found.");
     }
 
     public function save(Account $account)

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Exception;
 use Maruko\DddPhp\AccountBuilder;
+use Maruko\DddPhp\TransferService;
 
 test('Deve criar uma conta', function () {
 
@@ -117,9 +118,8 @@ test('Deve criar duas contas e fazer uma tranferência', function () {
     $accountTo->credit(500);
 
     // account -> transfer($accountFrom, $accountTo, 700)
-    $accountFrom->debit(700);
-    $accountTo->credit(700);
-
+    $transferService = new TransferService();
+    $transferService->transfer($accountFrom, $accountTo, 700);
 
     expect($accountFrom->getBalance())->toBe(300)
         ->and($accountTo->getBalance())->toBe(1200);

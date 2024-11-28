@@ -21,8 +21,8 @@ class TransferHandler implements Observer
         $accountFrom = $this->accountRepository->get($command->getAccountFromDocument());
         $accountTo = $this->accountRepository->get($command->getAccountToDocument());
 
-        $accountFrom->debit($command->getAmount());
-        $accountTo->credit($command->getAmount());
+        $transferService = new TransferService();
+        $transferService->transfer($accountFrom, $accountTo, $command->getAmount());
     }
 
     public function getOperation(): string

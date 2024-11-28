@@ -43,4 +43,9 @@ readonly class AccountApplicationService
         $this->publisher->publish($transferCommand);
 
     }
+
+    public function getAccountRepository(): AccountRepository
+    {
+        return $this->accountRepository;
+    }
 }
