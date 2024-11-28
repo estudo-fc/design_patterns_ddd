@@ -1,0 +1,25 @@
+{
+    "name": "maruko/ddd_php",
+    "autoload": {
+        "psr-4": {
+            "Maruko\\DddPhp\\": "src/"
+        },
+        "files": [
+            "src/Helpers/helper.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Marcone-Santos",
+            "email": "ms5806166@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "pestphp/pest": "*"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
