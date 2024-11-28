@@ -1,8 +1,9 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Domain\Service;
 
 use Exception;
+use Maruko\DddPhp\Domain\Entity\Account;
 
 class TransferService
 {

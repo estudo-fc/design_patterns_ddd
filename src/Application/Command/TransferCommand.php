@@ -1,6 +1,6 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Application\Command;
 
 class TransferCommand implements Command
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Application\Command;
 
-class DebitCommand implements Command
+class CreditCommand implements Command
 {
-    private string $operation = 'debit';
+    private string $operation = 'credit';
 
     public function __construct(
         private readonly string $accountDocument,

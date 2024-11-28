@@ -1,8 +1,9 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Domain\Entity;
 
 use Exception;
+use Maruko\DddPhp\Domain\Builder\AccountBuilder;
 
 class Account
 {

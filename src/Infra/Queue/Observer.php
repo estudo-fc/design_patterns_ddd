@@ -1,6 +1,8 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Infra\Queue;
+
+use Maruko\DddPhp\Application\Command\Command;
 
 interface Observer
 {

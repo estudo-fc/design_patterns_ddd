@@ -1,8 +1,10 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Infra\Repository;
 
 use Exception;
+use Maruko\DddPhp\Domain\Entity\Account;
+use Maruko\DddPhp\Domain\Repository\AccountRepository;
 
 class AccountRepositoryMemory implements AccountRepository
 {

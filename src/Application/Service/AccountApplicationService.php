@@ -1,6 +1,14 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Application\Service;
+
+use Maruko\DddPhp\Application\Command\CreditCommand;
+use Maruko\DddPhp\Application\Command\DebitCommand;
+use Maruko\DddPhp\Application\Command\TransferCommand;
+use Maruko\DddPhp\Domain\Builder\AccountBuilder;
+use Maruko\DddPhp\Domain\Entity\Account;
+use Maruko\DddPhp\Domain\Repository\AccountRepository;
+use Maruko\DddPhp\Infra\Queue\Publisher;
 
 readonly class AccountApplicationService
 {

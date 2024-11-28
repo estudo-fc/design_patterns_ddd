@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use Exception;
-use Maruko\DddPhp\AccountBuilder;
-use Maruko\DddPhp\TransferService;
+use Maruko\DddPhp\Domain\Builder\AccountBuilder;
+use Maruko\DddPhp\Domain\Service\TransferService;
 
 test('Deve criar uma conta', function () {
 

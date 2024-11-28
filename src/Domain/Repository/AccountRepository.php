@@ -1,6 +1,8 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Domain\Repository;
+
+use Maruko\DddPhp\Domain\Entity\Account;
 
 interface AccountRepository
 {

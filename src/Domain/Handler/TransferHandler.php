@@ -1,6 +1,11 @@
 <?php
 
-namespace Maruko\DddPhp;
+namespace Maruko\DddPhp\Domain\Handler;
+
+use Maruko\DddPhp\Application\Command\Command;
+use Maruko\DddPhp\Domain\Service\TransferService;
+use Maruko\DddPhp\Infra\Queue\Observer;
+use Maruko\DddPhp\Infra\Repository\AccountRepositoryMemory;
 
 class TransferHandler implements Observer
 {

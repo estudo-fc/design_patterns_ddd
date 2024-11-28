@@ -1,11 +1,11 @@
 <?php
 
-use Maruko\DddPhp\AccountApplicationService;
-use Maruko\DddPhp\AccountRepositoryMemory;
-use Maruko\DddPhp\CreditHandler;
-use Maruko\DddPhp\DebitHandler;
-use Maruko\DddPhp\Publisher;
-use Maruko\DddPhp\TransferHandler;
+use Maruko\DddPhp\Application\Service\AccountApplicationService;
+use Maruko\DddPhp\Domain\Handler\CreditHandler;
+use Maruko\DddPhp\Domain\Handler\DebitHandler;
+use Maruko\DddPhp\Domain\Handler\TransferHandler;
+use Maruko\DddPhp\Infra\Queue\Publisher;
+use Maruko\DddPhp\Infra\Repository\AccountRepositoryMemory;
 
 $accountApplicationService = null;
 
